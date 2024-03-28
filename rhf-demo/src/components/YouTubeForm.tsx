@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 
@@ -32,9 +33,17 @@ type FormValues = {
 // };
 
 export const YouTubeForm = () => {
-  const { register, control, handleSubmit, formState } = useForm<FormValues>({
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState,
+    watch,
+    getValues,
+    setValue,
+  } = useForm<FormValues>({
     defaultValues: {
-      username: "",
+      username: "Mario",
       email: "",
       channel: "",
       social: {
@@ -47,7 +56,7 @@ export const YouTubeForm = () => {
           number: "",
         },
       ],
-      age: 0,
+      age: 49,
       dob: new Date(),
     },
     // defaultValues: getUser,
@@ -59,13 +68,40 @@ export const YouTubeForm = () => {
     control,
   });
 
+  const watchUsername = watch("username");
+
   const onSubmit = (data: FormValues) => {
     console.log("onSubmit", data);
   };
 
+  const onGetValuesClick = () => {
+    console.log("get all values", getValues());
+    console.log("get username", getValues("username"));
+    console.log("get age & dob", getValues(["age", "dob"]));
+  };
+
+  const onResetNameClick = () => {
+    setValue("username", "", {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+  };
+
+  useEffect(() => {
+    const subscription = watch(value => {
+      console.log(value);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [watch]);
+
   return (
     <div>
       <h1>YouTube Form</h1>
+      <h2>Watched value: {watchUsername}</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <div className="form-control">
@@ -210,6 +246,8 @@ export const YouTubeForm = () => {
         </div>
 
         <button type="submit">Submit</button>
+        <button onClick={onGetValuesClick}>Get values</button>
+        <button onClick={onResetNameClick}>Reset Username</button>
       </form>
 
       <DevTool control={control} />
