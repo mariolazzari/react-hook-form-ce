@@ -49,6 +49,19 @@ export const YouTubeForm = () => {
                 value: true,
                 message: "Mail is required",
               },
+              validate: {
+                notAdmin: fieldValue => {
+                  return (
+                    fieldValue !== "admin@example.com" || "Mail not allowed"
+                  );
+                },
+                notBlackList: fieldValue => {
+                  return (
+                    !fieldValue.endsWith("baddomain.com") ||
+                    "Domain not supported"
+                  );
+                },
+              },
             })}
           />
           <p className="error">{errors.email?.message}</p>
