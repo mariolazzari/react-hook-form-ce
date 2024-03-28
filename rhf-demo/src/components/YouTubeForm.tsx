@@ -15,6 +15,8 @@ type FormValues = {
   };
   phoneNumbers: string[];
   phNumbers: PhNumber[];
+  age: number;
+  dob: Date;
 };
 
 // const getUser = async () => {
@@ -45,6 +47,8 @@ export const YouTubeForm = () => {
           number: "",
         },
       ],
+      age: 0,
+      dob: new Date(),
     },
     // defaultValues: getUser,
   });
@@ -177,6 +181,32 @@ export const YouTubeForm = () => {
               Add phone number
             </button>
           </div>
+        </div>
+
+        <div className="form-control">
+          <label htmlFor="age">Age</label>
+          <input
+            type="number"
+            id="age"
+            {...register("age", {
+              valueAsNumber: true,
+              required: "Age is required",
+            })}
+          />
+          <p className="error">{errors.age?.message}</p>
+        </div>
+
+        <div className="form-control">
+          <label htmlFor="dob">Birth date</label>
+          <input
+            type="date"
+            id="dob"
+            {...register("dob", {
+              valueAsDate: true,
+              required: "Birth date is required",
+            })}
+          />
+          <p className="error">{errors.age?.message}</p>
         </div>
 
         <button type="submit">Submit</button>
