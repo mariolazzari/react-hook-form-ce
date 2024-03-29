@@ -61,7 +61,9 @@ export const YouTubeForm = () => {
     },
     // defaultValues: getUser,
   });
-  const { errors } = formState;
+  const { errors, touchedFields, dirtyFields, isDirty } = formState;
+  console.log("touch", touchedFields);
+  console.log("dirty", dirtyFields, isDirty);
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
