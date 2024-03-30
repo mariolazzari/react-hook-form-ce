@@ -41,6 +41,8 @@ export const YouTubeForm = () => {
     watch,
     getValues,
     setValue,
+    reset,
+    trigger,
   } = useForm<FormValues>({
     defaultValues: {
       username: "Mario",
@@ -60,11 +62,26 @@ export const YouTubeForm = () => {
       dob: new Date(),
     },
     // defaultValues: getUser,
+    mode: "all",
   });
-  const { errors, touchedFields, dirtyFields, isDirty, isValid } = formState;
+  const {
+    errors,
+    touchedFields,
+    dirtyFields,
+    isDirty,
+    isValid,
+    isSubmitting,
+    isSubmitted,
+    isSubmitSuccessful,
+    submitCount,
+  } = formState;
   console.log("touch", touchedFields);
   console.log("dirty", dirtyFields, isDirty);
   console.log("valid", isValid);
+  console.log("isSubmitting", isSubmitting);
+  console.log("isSubmitted", isSubmitted);
+  console.log("isSubmitSuccessful", isSubmitSuccessful);
+  console.log("submitCount", submitCount);
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
@@ -104,6 +121,12 @@ export const YouTubeForm = () => {
       subscription.unsubscribe();
     };
   }, [watch]);
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <div>
@@ -151,6 +174,14 @@ export const YouTubeForm = () => {
                     !fieldValue.endsWith("baddomain.com") ||
                     "Domain not supported"
                   );
+                },
+                emailAvailable: async fieldValue => {
+                  const res = await fetch(
+                    `https://jsonplaceholder.typicode.com/users?email=${fieldValue}`
+                  );
+                  const data = await res.json();
+
+                  return data.length === 0 || "Email already exists";
                 },
               },
             })}
@@ -259,11 +290,16 @@ export const YouTubeForm = () => {
           <p className="error">{errors.age?.message}</p>
         </div>
 
-        <button type="submit" disabled={!isDirty || !isValid}>
+        <button onClick={() => reset()}>Reset</button>
+        <button type="submit" disabled={!isDirty || !isValid || isSubmitting}>
           Submit
         </button>
+
         <button onClick={onGetValuesClick}>Get values</button>
         <button onClick={onResetNameClick}>Reset Username</button>
+
+        <button onClick={() => trigger()}>Validate all</button>
+        <button onClick={() => trigger("channel")}>Validate channel</button>
       </form>
 
       <DevTool control={control} />
