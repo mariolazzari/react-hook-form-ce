@@ -61,9 +61,10 @@ export const YouTubeForm = () => {
     },
     // defaultValues: getUser,
   });
-  const { errors, touchedFields, dirtyFields, isDirty } = formState;
+  const { errors, touchedFields, dirtyFields, isDirty, isValid } = formState;
   console.log("touch", touchedFields);
   console.log("dirty", dirtyFields, isDirty);
+  console.log("valid", isValid);
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
@@ -258,7 +259,9 @@ export const YouTubeForm = () => {
           <p className="error">{errors.age?.message}</p>
         </div>
 
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={!isDirty || !isValid}>
+          Submit
+        </button>
         <button onClick={onGetValuesClick}>Get values</button>
         <button onClick={onResetNameClick}>Reset Username</button>
       </form>
